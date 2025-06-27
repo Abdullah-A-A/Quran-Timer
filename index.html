@@ -191,7 +191,7 @@
       } else if (mode === "مراجعة") {
         const reviewCount = Math.min(5, currentPage);
         remainingSeconds = reviewCount * 60;
-        updateTimerDisplay();
+        updateTimerDisplay(true);
         startInterval();
       }
     }
@@ -269,19 +269,25 @@
       stopBtn.disabled = enabled === false;
     }
 
-    function updateTimerDisplay() {
+    // التعديل هنا: تحديث عرض المؤقت مع اظهار نطاق القراءة عند المراجعة
+    function updateTimerDisplay(showRange = false) {
       const minutes = Math.floor(remainingSeconds / 60);
       const secs = remainingSeconds % 60;
-      const baseText =
-        mode === "حفظ"
-          ? `📘 الصفحة ${currentPage} - طور حفظ (${saveMinutes} دقائق)`
-          : `📖 الصفحة ${currentPage} - طور مراجعة (${Math.min(5, currentPage)} دقائق)`;
-
-      document.getElementById(
-        "timerDisplay"
-      ).textContent = `${baseText}\n⏳ الوقت المتبقي: ${minutes}:${secs
-        .toString()
-        .padStart(2, "0")}`;
+      if (mode === "حفظ") {
+        document.getElementById(
+          "timerDisplay"
+        ).textContent = `📘 الصفحة ${currentPage} - طور حفظ (${saveMinutes} دقائق)\n⏳ الوقت المتبقي: ${minutes}:${secs
+          .toString()
+          .padStart(2, "0")}`;
+      } else {
+        const startPageReview = Math.max(1, currentPage - 4);
+        const rangeText = `📖 مراجعة من الصفحة ${startPageReview} إلى ${currentPage}`;
+        document.getElementById(
+          "timerDisplay"
+        ).textContent = `${rangeText}\n⏳ الوقت المتبقي: ${minutes}:${secs
+          .toString()
+          .padStart(2, "0")}`;
+      }
     }
   </script>
 </body>
